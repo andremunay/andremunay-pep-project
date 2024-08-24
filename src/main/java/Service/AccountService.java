@@ -15,16 +15,16 @@ public class AccountService {
     }
 
     public Account addAccount(Account account) {
-        return accountDAO.insertAccount(account);
-        
-    }
-
-    public Account authenticate(Account account){
-        Account existingAccount = accountDAO.getByUsername(account.getUsername());
-
-        if (existingAccount != null && existingAccount.getPassword().equals(account.getPassword())) {
-            return existingAccount;
+        if (isUsernameTaken(account.getUsername())) {
+            return null;
         }
-        return null;
+        account = accountDAO.insertAccount(account);
+        return account;
     }
+    
+    private boolean isUsernameTaken(String username) {
+        return accountDAO.isUsernameTaken(username);
+    }
+    
+
 }
