@@ -25,6 +25,15 @@ public class AccountService {
     private boolean isUsernameTaken(String username) {
         return accountDAO.isUsernameTaken(username);
     }
+
+    public Account authenticate(String username, String password) {
+        Account existingAccount = accountDAO.getByUsername(username);
+
+        if (existingAccount != null && existingAccount.getPassword().equals(password)) {
+            return existingAccount;
+        }
+        return null;
+    }
     
 
 }
