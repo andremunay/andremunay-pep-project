@@ -40,4 +40,9 @@ public class MessageService {
         Message updatedMessage = messageDAO.updateMessageById(message);
         return updatedMessage;
     }
+
+    public List<Message> getAllMessages(int accountId) {
+        List<Message> messages = messageDAO.getAllMessages(accountId);
+        return messages;
+    }
 }
