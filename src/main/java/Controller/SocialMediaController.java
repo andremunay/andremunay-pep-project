@@ -1,5 +1,7 @@
 package Controller;
 
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +25,10 @@ public class SocialMediaController {
         app.post("/register", this::postRegisterHandler);
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::postMessagesHandler);
+        app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
+        app.patch("/messages/{message_id}", this::updateMessageById);
         return app;
     }
 
@@ -57,13 +63,56 @@ public class SocialMediaController {
 
     private void postMessagesHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(ctx.body(), Message.class);
-        if (message.getMessage_text() != null && message.getMessage_text().length() <= 255) {
-            messageService.addMessage(message);
-            ctx.json(mapper.writeValueAsString(message));
+        Message createdMessage = mapper.readValue(ctx.body(), Message.class);
+        if (
+            !createdMessage.getMessage_text().isEmpty() && 
+            createdMessage.getMessage_text().length() <= 255 &&
+            accountService.isValidAccount(createdMessage.getPosted_by())
+        ) {
+            Message addedMessage = messageService.addMessage(createdMessage);
+            ctx.json(mapper.writeValueAsString(addedMessage));
             ctx.status(200);
         } else {
             ctx.status(400);
         }
+    }
+
+    private void getAllMessagesHandler(Context ctx) throws JsonProcessingException {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+    }
+
+    private void getMessageByIdHandler(Context ctx) throws JsonProcessingException {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Message messageById = messageService.getMessageById(messageId);
+        if (messageById.getMessage_id() == messageId) {
+            ctx.json(messageById);
+        } else {
+            ctx.result("");
+        }
+    }
+
+    private void deleteMessageByIdHandler(Context ctx) throws JsonProcessingException {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Message messageById = messageService.deleteMessageById(messageId);
+        if (messageById != null) {
+            ctx.json(messageById);
+        } else {
+            ctx.result("");
+        }
+    }
+
+    private void updateMessageById(Context ctx) throws JsonProcessingException {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        message.setMessage_id(messageId);
+        Message updatedMessage = messageService.updateMessageById(message);
+        if (updatedMessage != null && !message.getMessage_text().isEmpty() && message.getMessage_text().length() <= 255) {
+            ctx.json(updatedMessage);
+        } else {
+            ctx.status(400);
+        }
+
     }
 }

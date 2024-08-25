@@ -23,7 +23,8 @@ public class AccountService {
     }
     
     private boolean isUsernameTaken(String username) {
-        return accountDAO.isUsernameTaken(username);
+        boolean isTaken = accountDAO.isUsernameTaken(username);
+        return isTaken;
     }
 
     public Account authenticate(String username, String password) {
@@ -33,6 +34,11 @@ public class AccountService {
             return existingAccount;
         }
         return null;
+    }
+    
+    public boolean isValidAccount(int accountId) {
+        Account existingAccount = accountDAO.getByAccountId(accountId);
+        return existingAccount != null;
     }
     
 
