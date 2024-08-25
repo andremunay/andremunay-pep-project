@@ -13,6 +13,7 @@ import Util.ConnectionUtil;
 
 public class MessageDAO {
 
+    // Method to add a new message to the database
     public Message insertMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -34,6 +35,7 @@ public class MessageDAO {
         return null;
     }
 
+    // Method to retrieve all messages from the database
     public List<Message> getAllMessages() {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
@@ -51,6 +53,7 @@ public class MessageDAO {
         return messages;
     }
 
+    // Method to retrieve a message by its ID
     public Message getMessageById(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         Message message = new Message();
@@ -68,6 +71,7 @@ public class MessageDAO {
         return message;
     }
 
+    // Method to delete a message by its ID and return the deleted message
     public Message deleteMessageById(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         Message messageToDelete = null;
@@ -91,6 +95,7 @@ public class MessageDAO {
         return messageToDelete;
     }
 
+    // Method to update a message by its ID
     public Message updateMessageById(Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -109,6 +114,7 @@ public class MessageDAO {
         return null;
     }
 
+    // Method to retrieve all messages posted by a specific account
     public List<Message> getAllMessages(int accountId) {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();

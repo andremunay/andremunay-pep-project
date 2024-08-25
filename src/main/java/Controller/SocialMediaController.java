@@ -13,15 +13,21 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 public class SocialMediaController {
+    // Declare services for message and account management
     MessageService messageService;
     AccountService accountService;
 
+    // Initialize sevices in the constructor
     public SocialMediaController() {
         this.messageService = new MessageService();
         this.accountService = new AccountService();
     }
+
+    // Method to start the API using Javalin framework
     public Javalin startAPI() {
         Javalin app = Javalin.create();
+
+        // Define the endpoints and their handlers
         app.post("/register", this::postRegisterHandler);
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::postMessagesHandler);
@@ -33,10 +39,13 @@ public class SocialMediaController {
         return app;
     }
 
+    // Handler for account registration
     private void postRegisterHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
         Account addedAccount = accountService.addAccount(account);
+
+        // Check if the account was successfully added
         if (addedAccount == null) {
             ctx.status(400);
         } else if (addedAccount.getUsername() != null && 
@@ -48,6 +57,7 @@ public class SocialMediaController {
         }
     }
 
+    // Handler for user login
     private void postLoginHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account loginAccount = mapper.readValue(ctx.body(), Account.class);
@@ -62,6 +72,7 @@ public class SocialMediaController {
 
     }
 
+    // Handler for posting a new message
     private void postMessagesHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message createdMessage = mapper.readValue(ctx.body(), Message.class);
@@ -78,11 +89,13 @@ public class SocialMediaController {
         }
     }
 
+    // Handler for retrieving all messages
     private void getAllMessagesHandler(Context ctx) throws JsonProcessingException {
         List<Message> messages = messageService.getAllMessages();
         ctx.json(messages);
     }
 
+    // Handler for retrieving a message by ID
     private void getMessageByIdHandler(Context ctx) throws JsonProcessingException {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
         Message messageById = messageService.getMessageById(messageId);
@@ -93,6 +106,7 @@ public class SocialMediaController {
         }
     }
 
+    // Handler for deleting a message by ID
     private void deleteMessageByIdHandler(Context ctx) throws JsonProcessingException {
         int account_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message messageById = messageService.deleteMessageById(account_id);
@@ -103,6 +117,7 @@ public class SocialMediaController {
         }
     }
 
+    // Handler for updating a message by ID
     private void updateMessageById(Context ctx) throws JsonProcessingException {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
         ObjectMapper mapper = new ObjectMapper();
@@ -117,6 +132,7 @@ public class SocialMediaController {
 
     }
 
+    // Handler for retrieving all messages by account ID
     private void getAllMessagesByIdHandler(Context ctx) throws JsonProcessingException {
         int accountId = Integer.parseInt(ctx.pathParam("account_id"));
         List<Message> messages = messageService.getAllMessages(accountId);

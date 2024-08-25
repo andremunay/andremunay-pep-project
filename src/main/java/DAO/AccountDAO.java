@@ -12,6 +12,8 @@ import Util.ConnectionUtil;
 //import java.util.ArrayList;
 
 public class AccountDAO {
+
+    // Method to add a new account to the database
     public Account insertAccount(Account account) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -31,6 +33,7 @@ public class AccountDAO {
         return null;
     }
 
+    // Method to authenticate an account based on username
     public boolean isUsernameTaken(String username) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -47,6 +50,7 @@ public class AccountDAO {
         return false;
     }
 
+    // Method to retrieve an account by its ID
     public Account getByUsername(String username) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -65,6 +69,7 @@ public class AccountDAO {
         return null;
     }
 
+    // Method to retrieve an account by its ID
     public Account getByAccountId(int accountId) {
         Connection connection = ConnectionUtil.getConnection();
         try {
