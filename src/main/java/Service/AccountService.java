@@ -14,7 +14,7 @@ public class AccountService {
     public AccountService(AccountDAO accountDAO) {
         this.accountDAO = accountDAO;
     }
-
+    
     // Use the AccountDAO to add a new account to the database if the username is available
     public Account addAccount(Account account) {
         if (isUsernameTaken(account.getUsername())) {
